@@ -1,3 +1,4 @@
+import math
 import torch
 import torch.nn as nn
 
@@ -40,6 +41,13 @@ class NativeCustomLSTM(nn.Module):
         self.V_o = nn.Parameter(torch.Tensor((hidden_sz, hidden_sz)))
         # This is the bias term for the forget gate
         self.b_o = nn.Parameter(torch.Tensor((hidden_sz)))
+
+        self.init_weights()
+
+    def init_weights(self):
+        stdv = 1 / math.sqrt(self.hidden_size)
+        for weight in self.parameters():
+            weight.data.uniform_(-stdv, stdv)
 
     def forward(self, x, init_states=None):
         bs, seq_sz, _ = x.size()
